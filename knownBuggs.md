@@ -11,3 +11,4 @@
  - No way to detect if user has already seen message (unread status)
  - Password are stored as plain text into DB
  
+ 
