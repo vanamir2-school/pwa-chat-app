@@ -17,3 +17,9 @@ projectFolder> npm install <br/>
 projectFolder> cd .. <br/>
 projectFolder> yarn dev <br/>
 
+## Another Doc <br/>
+There are files called "usefullResources.md" in project folder and project/client folder with usefull links. <br/>
+There is also list of known buggs in file "knownBuggs.md".
+
+### Heroku deploy pitfall <br/>
+**After deployment of changes to Heroku, clear browser cache in order to prevent ugly buggs.**
