@@ -1,6 +1,7 @@
 # Chat app demo <br/>
 Simple chat app to try out SPA web app with technologies listed below.<br/>
-App can be visited on this page: https://pwa-chat-app.herokuapp.com/
+App can be visited on this page: https://pwa-chat-app.herokuapp.com/ <br/>
+Backend REST API can be found there: https://chatpwa.docs.apiary.io/ <br/>
 
 ## Technologies <br/>
  - Nodejs - Express (backend)
