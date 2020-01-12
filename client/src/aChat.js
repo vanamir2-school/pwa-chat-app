@@ -4,13 +4,7 @@ import axios from "axios";
 
 // gets current site and changes https to wss (exaple: wss://pwa-chat-app.herokuapp.com)
 var HOST = window.location.origin.replace(/^https/, 'wss');
-var connection = "";
-if (process.env.NODE_ENV === 'production') {
-    connection = new WebSocket(HOST);
-    //console.log("HOST" + HOST);
-} else {
-    connection = new WebSocket('ws://localhost:5000');
-}
+var connection = process.env.NODE_ENV === 'production' ? new WebSocket(HOST) : new WebSocket('ws://localhost:5000');
 
 export class WebSocketTest extends Component {
     constructor(props) {
@@ -22,9 +16,6 @@ export class WebSocketTest extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        connection.onopen = () => {
-            //console.log('WebSocket Client Connected');
-        };
         connection.onmessage = (message) => {
             //console.log(message.data);
             if (message.data === 'update') {
@@ -48,8 +39,7 @@ export class WebSocketTest extends Component {
         }
 
         return (
-            <div>
-            </div>
+            <div/>
         );
     }
 }
@@ -78,16 +68,13 @@ export class NewChat extends React.Component {
 
     // make POST action ... action="chat/add" method="POST"
     handleSubmit(event) {
-        // obezlička na zavření okna po přidání chatu
-        let closeFormFunc = this.closeForm;
         let refresh = this.state.newchat;
         event.preventDefault();
         //console.log('Add chat action starting...'.concat(this.state));
         axios.post('/chat/add', this.state)
-            .then(function (response) {
-                closeFormFunc();
+            .then((response) => {
+                this.closeForm();
                 refresh();
-                //alert(response.data);
                 //console.log(response.data);
             })
             .catch(function (error) {
@@ -217,7 +204,7 @@ class ChatElement extends React.Component {
         return (
             <a href={"/#"} className="active_chat" onClick={() => {
                 this.state.click();
-                //console.log('AKTIVNI CHAT UVNITR CHAT ELEMENTU: ' + this.state.activeChat());
+                //console.log('Active chat: ' + this.state.activeChat());
             }}>
                 <div style={{backgroundColor: this.props.chatid === this.state.activeChat() ? "yellow" : ""}}
                      className="chat_list active_chat">
@@ -349,14 +336,13 @@ export class aChat extends React.Component {
     render() {
         this.loadChats();
         //console.log('Entering RENDER');
-
-        // jak dosadit v reactu dynamicky elementy do Render metody
+        // how to dynamically add elements do Render method
         // https://stackoverflow.com/questions/29149169/how-to-loop-and-render-elements-in-react-js-without-an-array-of-objects-to-map
         // ---------------------------- CHATS
         let chatElements = [];
         for (let i = 0; i < this.state.chats.length; i++) {
             //console.log(this.state.chats[i].name + ' ' + this.state.chats[i].lastmsg);
-            // pokud ještě VŮBEC nedošlo k načtení message, načti je pro první zobrazený chat
+            // If there was no previus attempt to load messages, load them fort the first time there.
             if (this.state.messages === 'a') {
                 this.loadMessages(null, this.state.chats[i].id);
                 return null;
@@ -367,11 +353,9 @@ export class aChat extends React.Component {
                 lastmsg={this.state.chats[i].lastmsg}
                 chatid={this.state.chats[i].id}
                 loadMessages={() => this.loadMessages(null, this.state.chats[i].id)}
-                key={this.state.chats[i].id} // TOTO JE DULEZITE
+                key={this.state.chats[i].id} // this is important https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
                 click={this.click.bind(this, this.state.chats[i].id)}
                 activeChat={this.getActiveChat.bind(this)}
-                // VIZ https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
-                // REACT DIKY TOMU DOKAZE REFRESHNOUT VSE JAK SE PATRI A SLUSI
             />);
         }
 
@@ -383,22 +367,18 @@ export class aChat extends React.Component {
                 messageElements.push(<OutgoingMessage
                     message={this.state.messages[i].text}
                     dateTime={this.state.messages[i].time}
-                    key={this.state.messages[i].id} // TOTO JE DULEZITE
-                    // VIZ https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
-                    // REACT DIKY TOMU DOKAZE REFRESHNOUT VSE JAK SE PATRI A SLUSI
+                    key={this.state.messages[i].id} // this is important https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
                 />);
             } else {
                 messageElements.push(<IncomingMessage
                     message={this.state.messages[i].text}
                     dateTime={this.state.messages[i].time}
-                    key={this.state.messages[i].id} // TOTO JE DULEZITE
-                    // VIZ https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
-                    // REACT DIKY TOMU DOKAZE REFRESHNOUT VSE JAK SE PATRI A SLUSI
+                    key={this.state.messages[i].id} // this is important https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
                 />);
             }
         }
 
-        // SCROLL TO BOTTOM TODO - melo by se predelat dle https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
+        // SCROLL TO BOTTOM TODO - it should be replaced by https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
         const msgWindow = document.getElementById("messageWindow");
         // allow 1px inaccuracy by adding 1
         if (msgWindow !== null) {

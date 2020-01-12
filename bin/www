@@ -101,7 +101,6 @@ module.exports.sendMsg = function sendMessage(message, emails) {
 };
 
 wsServer.on('request', function (request) {
-
     // connection of a user with uID
     const userID = getUniqueID();
     console.log((new Date()) + ' Recieved a new connection from origin ' + request.origin + '.');

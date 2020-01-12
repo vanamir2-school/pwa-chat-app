@@ -1,12 +1,10 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var path = require('path');
-var logger = require('morgan');
-var app = express();
+const createError = require('http-errors');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const path = require('path');
+const logger = require('morgan');
+const app = express();
 
 app.use(session({
     secret: 'secret',

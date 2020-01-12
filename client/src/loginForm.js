@@ -12,13 +12,11 @@ export class LoginForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-    // univerzalni vyhodnoceni toho jakou property vzit
+    // generalized setState assignment
     handleChange(event) {
         this.setState({[event.target.name]: event.target.value});
     }
 
-    // make POST action ... action="user/add" method="POST"
     handleSubmit(event) {
         event.preventDefault();
         //console.log('User signup action starting...'.concat(JSON.stringify(this.state)));
@@ -73,8 +71,6 @@ export class SignupForm extends React.Component {
 
     // make POST action ... action="user/add" method="POST"
     handleSubmit(event) {
-        // bullshit obezlička jak pustit action pro návrat na login page
-        let actionGoToLogin = this.state.action;
         event.preventDefault();
         //console.log('User signup action starting...'.concat(this.state));
         if (this.state.password !== this.state.passwordConfirm) {
@@ -82,11 +78,10 @@ export class SignupForm extends React.Component {
             return;
         }
         axios.post('/user/signup', this.state)
-            .then(function (response) {
-                actionGoToLogin();
+            .then( (response) => {
+                this.state.action();
                 alert(response.data);
                 console.log(response.data);
-                return;
             })
             .catch(function (error) {
                 if (error.response) {
@@ -116,7 +111,7 @@ export class SignupForm extends React.Component {
     }
 }
 
-// při založení zlačítka se mu předá property onClick, které bude zajišťovat reakci na stisk
+// při založení tlačítka se mu předá property onClick, které bude zajišťovat reakci na stisk
 export function ActionButton(props) {
     return (
         // u Function komponent uz nemusi but lambda notace " () => "
